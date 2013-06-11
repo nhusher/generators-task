@@ -7,7 +7,7 @@ module.exports = {
             'typeName AS name,',
             'invTypes.description,',
             'invGroups.groupName AS type,',
-            'invCategories.categoryName AS category',
+            'invCategories.categoryName AS category,',
             'marketGroupID as marketGroup',
         'FROM',
             'invTypes,',

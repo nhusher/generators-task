@@ -7,7 +7,7 @@ var express = require('express'),
     app     = express();
 
 
-db.trace(function(f) { console.log(f); });
+// db.trace(function(f) { console.log(f); });
 
 // --------------------------------------------------------------------------
 
@@ -91,8 +91,11 @@ app.get('/item/search', function(req, res) {
 });
 
 app.get('/item/:id', function(req, res) {
+    console.log(queries.ITEM_ID_QUERY, req.params.id);
     db.one(queries.ITEM_ID_QUERY, { $id: req.params.id }).then(function(result) {
         res.json(result || {});
+    }, function(er) {
+        console.log(er);
     });
 });
 
