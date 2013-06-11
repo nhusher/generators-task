@@ -6,6 +6,7 @@
     "scripts": {},
     "dependencies": {
         "sqlite3"       : "*",
-        "colors"        : "*"
+        "colors"        : "*",
+        "express"       : "*"
     }
 }

@@ -17,7 +17,12 @@
                     r = [ r ];
                 }
                 
-                return r[method].apply(r, args);
+                if(method === 'reduceRight' || method === 'reduceLeft') {
+                    // TODO: implement
+                    return r[method].apply(r, args);
+                } else {
+                    return collect(r[method].apply(r, args));
+                }
             });
         };
     }
@@ -41,22 +46,35 @@
             remaining = promises.length,
             results = new Array(promises.length);
         
-        promise = new Promise(function(fulfill, reject) {
+        promise = new ListPromise(function(fulfill, reject) {
             doFulfill = fulfill;
             doReject = reject;
-        })
-        
-        promises.forEach(function(p, i) {
-            p.then(function(result) {
-                remaining -= 1;
-                results[i] = result;
-                
-                if(remaining === 0) {
-                    doFulfill(results);
-                }
-            }, doReject);
         });
         
+        if(remaining) {
+            promises.forEach(function(p, i) {
+                if(Promise.isPromise(p)) {
+                    p.then(function(result) {
+                        remaining -= 1;
+                        results[i] = result;
+
+                        if(remaining === 0) {
+                            doFulfill(results);
+                        }
+                    }, doReject);
+                } else {
+                    results[i] = p;
+                    remaining -= 1;
+
+                    if(remaining === 0) {
+                        doFulfill(results);
+                    }
+                }
+            });
+        } else {
+            doFulfill(promises);
+        }
+
         return promise;
     }
 

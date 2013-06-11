@@ -58,8 +58,6 @@
             }
         
             if(status !== 'fulfilled') {
-                throw reason;
-            
                 errbacks.forEach(function(errback) { errback(result); });
             
                 callbacks = [];
