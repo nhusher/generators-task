@@ -1,0 +1,22 @@
+body {
+    font: 16px/20px Helvetica;
+}
+.user-event {
+    padding: 2px;
+}
+.user-event a {
+    font-weight: bold;
+    text-decoration: none;
+    color: #003366;
+}
+.user-event img {
+    margin-right: 8px;
+    vertical-align: middle;
+    max-height: 32px;
+    max-width: 32px;
+    border-radius: 4px;
+}
+.user-event .date {
+    font-size: 75%;
+    color: #888;
+}

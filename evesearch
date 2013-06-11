@@ -1,0 +1,40 @@
+#!/usr/bin/env node --harmony
+
+var // Get our genrators library
+    generators = require('./lib/task'),
+    task = generators.task,
+    tx   = generators.tx,
+
+    // Get our SQLite promise library
+    sqlite = require('./node/sqlite-promise').sqlite,
+
+    // Some boring code we don't need to see...
+    queries = require('./node/sqlite-queries'),
+    utils = require('./node/utils'),
+
+    // the last command line argument is our query (NO TABLE INJECTION PLS!)
+    query = process.argv.pop();
+    
+
+var db = sqlite('./data/database.sqlite');
+
+
+// Builds a skill tree by recursively calling the `resolveSkills` function
+var resolveSkills = tx(function* (typeId) {
+    var skills = yield db.all(queries.SKILL_QUERY, { $typeId: typeId });
+
+    for(i = skills.length - 1; i >= 0; i -= 1) {
+        skills[i].prerequisites = yield resolveSkills(skills[i].skillId);
+    }
+
+    return skills;
+});
+
+// Gets the ship, attr, and skill data for a given query string.
+task(function* () {
+    var ship   = yield db.one(queries.SHIP_QUERY, { $typeName: '%' + query + '%' }),
+        attrs  = yield db.all(queries.ATTRIBUTE_QUERY, { $typeId: ship.typeID }),
+        skills = yield resolveSkills(ship.typeID);
+
+    utils.printShip(ship, skills, attrs);
+});

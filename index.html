@@ -1,0 +1,35 @@
+<html>
+<head>
+<link rel="stylesheet" href="./assets/task.css" />
+</head>
+<body>
+  <div id="out"></div>
+  
+  <script src="./lib/utils.js"></script>
+  <script src="./lib/promise.js"></script>
+  <script src="./lib/task.js"></script>
+  <script src="./assets/example-promises.js"></script>
+  <script src="./assets/boring-stuff.js"></script>
+
+  <script>
+    var MEMBERS_URL = 'https://api.github.com/orgs/dealerdotcom/members',
+        EVENTS_URL  = 'https://api.github.com/users/{login}/events';
+
+    
+    json(MEMBERS_URL).as(ListPromise).
+                      map(function(u) { return json(sub(EVENTS_URL, u)); }).
+                      then(collect).
+                      then(log);
+
+    // USING ASYNC TASKS
+    task(function* () {
+        var userList   = yield json(MEMBERS_URL),
+            userEvents = yield collect(userList.map(function(u) { return json(sub(EVENTS_URL, u)); }));
+    
+        log(userEvents);
+    });
+    
+    </script>
+    
+</body>
+</html>

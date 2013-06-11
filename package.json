@@ -1,0 +1,11 @@
+{
+    "name": "tasks",
+    "author": "Nicholas Husher <nhusher@gmail.com>",
+    "version": "0.0.1",
+    "engines": {},
+    "scripts": {},
+    "dependencies": {
+        "sqlite3"       : "*",
+        "colors"        : "*"
+    }
+}
